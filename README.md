@@ -65,3 +65,31 @@ resource "google_compute_firewall" "jsa_vm_firewall" {
 
 The network argument reference the previously defined *google_compute_network* and is protecting that specific network.\
 The network argument is required for the *google_compute_firewall*, it cannot be created if a required argument is not present.
+
+## Basic Terraform workflow
+
+After identifying the required cloud resources and creating the corresponding terraform files the typical workflow looks something like this:
+
+```bash
+$ terraform init
+```
+The init command installs and configures the required terraform providers. 
+
+```bash
+$ terraform plan
+```
+The plan command creates a preview of the changes that will be made to the currently deployed resources.
+
+```bash
+$ terraform apply
+```
+The apply command will execute those changes.
+
+```bash
+$ terraform destroy
+```
+The destroy command will tear down the deployed infrastructure.
+
+To keep track of deployed resources Terraform manages those in a file defining the current state, the `terraform.tfstate` file.\
+ In a later chapter the safe and efficient management of this extremely important file will be discussed, for a small test project it is sufficient to keep it in the local directory where it will be created and managed automatically.
+
