@@ -19,7 +19,7 @@ IaC describes a automated method of managing and provisioning computing resource
 
 Terraform is a open-source infrastructure as code code tool by HashiCorp. It uses the domain-specific declarative HashiCorp Configuration Language and supports a wide variety of cloud infrastructure providers. Terraform is primarily used to deploy infrastructure but is also able to install software on the machines it provides and to deploy applications there.
 
-## Terraform architecture
+### Terraform architecture
 
 The most important elements of an infrastructure project with Terraform are the configuration files, the terraform state file, Terraform itself and the providers. The most important components and their relation is depicted in the basic diagram below.
 
@@ -30,7 +30,7 @@ The **terraform.tfstate** file is a very important file in any Terraform project
 The **Terraform Core** represents the main software component of Terraform.
 The **Providers** are plugins that serve as the connection between Terraform and the **cloud platform** where the infrastructure is to be deployed. They are installed as required for the individual platform that will be used.
 
-## Terraform resource structure and basic HCL syntax
+### Terraform resource structure and basic HCL syntax
 
 The HCL language uses two main constructs: *arguments* and *blocks*.
 An *argument* looks like a variable in any other language:
@@ -66,7 +66,11 @@ resource "google_compute_firewall" "jsa_vm_firewall" {
 The network argument reference the previously defined *google_compute_network* and is protecting that specific network.\
 The network argument is required for the *google_compute_firewall*, it cannot be created if a required argument is not present.
 
-## Basic Terraform workflow
+### Terraform variables
+
+TODO
+
+### Basic Terraform workflow
 
 After identifying the required cloud resources and creating the corresponding terraform files the typical workflow looks something like this:
 
@@ -95,7 +99,7 @@ To keep track of deployed resources Terraform manages those in a file defining t
 
 ## Example Project 1: A simple Ubuntu Virtual Machine
 
-## Terraform files
+### Terraform files
 
 For better overview the terraform code is structured into multiple files. 
 The file `terraform.tf` specifies the required providers including version, in this case the google provider in the version 3.5.0.\
@@ -169,3 +173,48 @@ provisioner "local-exec" {
 }
 ```
 This script completes the setup for the service account to allow access to the VM. It assigns the required roles to the service account, creates required keys and saves the username in a simple .txt file. By using this username, the external IP of the VM and the private key that has been created the machine can be accessed from any computer with an SSH client.
+
+## Example-Project 2: A simple Kubernetes cluster with a minimal example app deployed
+
+Similar to it's competition from Amazon and Microsoft GCP provides a Kubernetes Service, the Google Kubernetes Engine (GKE).\
+this simple example deploys a minimal cluster with one node in a single zone. A minimal nodejs application is then deployed onto the cluster.
+The Terraform resources deployed are divided into the file `gke.tf` and `kubernetes.tf`.\
+ The resources defined in `gke.tf` are those required for the kubernetes cluster, a google_container_cluster resource and the google_container_node_pool which is then attached to the cluster: 
+
+```terraform
+resource "google_container_node_pool" "jsa_primary_nodes" {
+  ...
+
+  cluster    = google_container_cluster.jsa_primary.name
+  node_count = var.gke_num_nodes
+
+  node_config {
+  ...
+
+}
+```
+
+The cluster resource can be deployed into either regions or zones, if deployed into a region it will create a cluster in each of the regions zones, increasing availability.
+
+The `kubernetes.tf` file describes the kubernetes-related resources, a deployment for the application and and a load balancer kubernetes service.\
+These resources look extremely similar to how the .yaml definitions for kubernetes would like, here to load balancer as an example:
+
+```terraform
+resource "kubernetes_service" "jsa_testapp_lb" {
+  metadata {
+    name =  "jsa-testapp-example"
+  }
+
+  spec {
+    selector = {
+      App = kubernetes_deployment.jsa_testapp.spec.0.template.0.metadata[0].labels.App
+    }
+    port {
+      port = 8081
+      target_port = 8080
+    }
+
+    type = "LoadBalancer"
+  }
+}
+```
