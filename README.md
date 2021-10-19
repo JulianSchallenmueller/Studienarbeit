@@ -66,9 +66,30 @@ resource "google_compute_firewall" "jsa_vm_firewall" {
 The network argument reference the previously defined *google_compute_network* and is protecting that specific network.\
 The network argument is required for the *google_compute_firewall*, it cannot be created if a required argument is not present.
 
-### Terraform variables
+### Terraform input variables
 
-TODO
+Input variables are useful to change parameters outside of the source code such as a project Id for example. A variable is defined as a single block with an argument.
+
+```terraform
+variable "gke_username" {
+  default     = "jsa"
+  description = "gke username"
+}
+```
+The blocks type is variable, the label by which it can be referenced is gke_username and it contains two arguments, the first is a (required) default value and the second a optional description.\
+If a `terraform.tfvars` file is present variables are filled using the contents of that file which are simple key-value pairs. Variables can also be sensitive and stored in a backend, examples for this are demonstrated in a later chapter.
+
+### Terraform output variables
+
+Parameters such as an external IP address are often only known after creation of the corresponding resource, therefore it is useful to have an option to call upon those values. Terraform output variables serve the purpose of exposing attributes to other components or simply displaying the values for easy access to them.
+
+```terraform
+output "lb_ip" {
+  value = kubernetes_service.jsa_testapp_lb.status.0.load_balancer.0.ingress.0.ip
+  description = "External loadbalancer ip"
+}
+```
+This example exposes the public IP address of a kubernetes loadbalancer on which a deployed application can be accessed.
 
 ### Basic Terraform workflow
 
