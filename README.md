@@ -266,3 +266,37 @@ provider "google" {
 Sensitive and non-sensitive variables in the Terraform Cloud: 
 
 ![TF Cloud Variables](./backend-state/images/tf-cloud.png)
+
+## Example-project 4: Google Cloud Storage
+
+This is a very small and minimal example for a storage bucket and on object being stored in it.
+
+`storage.tf`:
+
+```terraform
+resource "google_storage_bucket" "jsa_terraform_bucket" {
+  name = "jsa-terraform-bucket"
+
+  location = "EU"
+  force_destroy = true
+
+  uniform_bucket_level_access = true
+}
+```
+
+`stored-object.tf`:
+
+```terraform
+resource "google_storage_bucket_object" "hello" {
+  name   = "hello"
+  source = "./files/hello.txt"
+  bucket = "jsa-terraform-bucket"
+
+  depends_on = [
+    google_storage_bucket.jsa_terraform_bucket
+  ]
+}
+```
+
+The only thing of note is the depends_on argument; without the storage bucket existing the object to be stored cannot be uploaded into it.\
+In most cases Terraform is able to work out dependencies between resources without explicit input, in case it doesn't this is a way to do so.
