@@ -97,7 +97,7 @@ The destroy command will tear down the deployed infrastructure.
 To keep track of deployed resources Terraform manages those in a file defining the current state, the `terraform.tfstate` file.\
  In a later chapter the safe and efficient management of this extremely important file will be discussed, for a small test project it is sufficient to keep it in the local directory where it will be created and managed automatically.
 
-## Example Project 1: A simple Ubuntu Virtual Machine
+## Example project 1: A simple Ubuntu virtual machine
 
 ### Terraform files
 
@@ -174,7 +174,7 @@ provisioner "local-exec" {
 ```
 This script completes the setup for the service account to allow access to the VM. It assigns the required roles to the service account, creates required keys and saves the username in a simple .txt file. By using this username, the external IP of the VM and the private key that has been created the machine can be accessed from any computer with an SSH client.
 
-## Example-Project 2: A simple Kubernetes cluster with a minimal example app deployed
+## Example project 2: A simple Kubernetes cluster with a minimal example app deployed
 
 Similar to it's competition from Amazon and Microsoft GCP provides a Kubernetes Service, the Google Kubernetes Engine (GKE).\
 this simple example deploys a minimal cluster with one node in a single zone. A minimal nodejs application is then deployed onto the cluster.
@@ -219,7 +219,7 @@ resource "kubernetes_service" "jsa_testapp_lb" {
 }
 ```
 
-## Example-project 3: Demo for statefile and (sensitive) variables in backend
+## Example project 3: Demo for statefile and (sensitive) variables in backend
 
 The terraform state file which is Terraforms source of truth about the state of any deployed resources can be stored in a remote backend such as Terraform Cloud.
 Terraform recommends to do so in any production environment or when any meaningful infrastructure is managed due to the advantages it provides in safety and ease of collaboration with multiple team members working on the same project.
@@ -267,7 +267,7 @@ Sensitive and non-sensitive variables in the Terraform Cloud:
 
 ![TF Cloud Variables](./backend-state/images/tf-cloud.png)
 
-## Example-project 4: Google Cloud Storage
+## Example project 4: Google Cloud Storage
 
 This is a very small and minimal example for a storage bucket and on object being stored in it.
 
