@@ -2,18 +2,18 @@
 
 ## Google Cloud Platform
 
-Google Cloud Platform offers a variety of cloud computing services including cloud storage various computing services such as virtual private networks, virtual machines, a Kubernetes engine, SQL database instances and more.\
+Google Cloud Platform offers a variety of cloud computing services including cloud storage, various computing services such as virtual private networks, virtual machines, a Kubernetes engine, SQL database instances and more.\
 These cloud computing resources are managed through either a browser based graphical user interface or the Google Cloud CLI in the terminal.
 
 ## Issues of managing infrastructure manually
 
 To be able to recreate an environment from scratch it is necessary to carefully document all configuration details of all resources as well as the correct order in which to create them.\
-All of those can be
 During development or operations it is very easy to get into a situation where small changes are introduced which are not documented and after a while those differences can grow and become overwhelming, maybe even create security risks. This is known as configuration drift and one of the main issues infrastructure as code (IaC) tries to solve.
 
 ## Infrastructure as Code
 
-IaC describes a automated method of managing and provisioning computing resources by use of machine readable definition files. As long as changes are only made trough this process These files are also human readable and therefore can serve as a basic documentation of the existing infrastructure. Further benefits to the IaC approach of managing infrastructure include the opportunity continuous delivery of new additions and bug fixes, increased commonality in tooling between development and operations and more.
+IaC describes a automated method of managing and provisioning computing resources by use of machine readable definition files.
+The files are also human readable and therefore can serve as a basic documentation of the existing infrastructure. Further benefits to the IaC approach of managing infrastructure include the opportunity to use a continuous integration/continuous delivery approach to deploy new additions and bug fixes, increased commonality in tooling between development and operations and more.
 
 ## Terraform
 
@@ -47,8 +47,8 @@ resource "google_compute_network" "jsa_vpc_network" {
 }
 ``` 
 
-The blocks type is in front of it, here it is *resource*. The type of the block defines how many labels a block type has, in this instance it is two. Those are used to reference a block in other parts of the code. Which resource types are available, here *google_compute_network* is used, is defined by the installed provider.\
-Lables and arguments can then be used to reference a specific resource in other parts of the terraform project:
+The block type is in front of it, here it is *resource*. The type of the block defines how many labels a block type has, in this instance it is two. Those are used to reference a block in other parts of the code. Which resource types are available, here *google_compute_network* is used, is defined by the installed provider.\
+Labels and arguments can then be used to reference a specific resource in other parts of the terraform project:
 
 ```terraform
 resource "google_compute_firewall" "jsa_vm_firewall" {
@@ -89,7 +89,7 @@ output "lb_ip" {
   description = "External loadbalancer ip"
 }
 ```
-This example exposes the public IP address of a kubernetes loadbalancer on which a deployed application can be accessed.
+This example exposes the public IP address of a Kubernetes load balancer on which a deployed application can be accessed.
 
 ### Basic Terraform workflow
 
@@ -133,7 +133,7 @@ There are several ways how a SSH connection to a Linux VM can be established, fo
 ### Google Cloud CLI
 
 Google Cloud Platform provides several ways of connecting to VM's 
-The simplest method requires the gcloud CLI with authorized Cloud SDK tools:
+The simplest method requires the Google Cloud CLI (gcloud) with authorized Cloud SDK tools:
 
 ```bash
 $ gcloud compute ssh --project=<project-id> --zone=<zone> <VM name>
@@ -200,7 +200,7 @@ This script completes the setup for the service account to allow access to the V
 Similar to it's competition from Amazon and Microsoft GCP provides a Kubernetes Service, the Google Kubernetes Engine (GKE).\
 this simple example deploys a minimal cluster with one node in a single zone. A minimal nodejs application is then deployed onto the cluster.
 The Terraform resources deployed are divided into the file `gke.tf` and `kubernetes.tf`.\
- The resources defined in `gke.tf` are those required for the kubernetes cluster, a google_container_cluster resource and the google_container_node_pool which is then attached to the cluster: 
+ The resources defined in `gke.tf` are those required for the Kubernetes cluster, a google_container_cluster resource and the google_container_node_pool which is then attached to the cluster: 
 
 ```terraform
 resource "google_container_node_pool" "jsa_primary_nodes" {
@@ -217,8 +217,8 @@ resource "google_container_node_pool" "jsa_primary_nodes" {
 
 The cluster resource can be deployed into either regions or zones, if deployed into a region it will create a cluster in each of the regions zones, increasing availability.
 
-The `kubernetes.tf` file describes the kubernetes-related resources, a deployment for the application and and a load balancer kubernetes service.\
-These resources look extremely similar to how the .yaml definitions for kubernetes would like, here to load balancer as an example:
+The `kubernetes.tf` file describes the Kubernetes-related resources, a deployment for the application and and a load balancer Kubernetes service.\
+These resources look extremely similar to how the .yaml definitions for Kubernetes would look like, here to load balancer as an example:
 
 ```terraform
 resource "kubernetes_service" "jsa_testapp_lb" {
@@ -242,7 +242,7 @@ resource "kubernetes_service" "jsa_testapp_lb" {
 
 ## Example project 3: Demo for statefile and (sensitive) variables in backend
 
-The terraform state file which is Terraforms source of truth about the state of any deployed resources can be stored in a remote backend such as Terraform Cloud.
+The terraform state file which is the Terraform source of truth about the state of any deployed resources can be stored in a remote backend such as Terraform Cloud.
 Terraform recommends to do so in any production environment or when any meaningful infrastructure is managed due to the advantages it provides in safety and ease of collaboration with multiple team members working on the same project.
 \
 \
